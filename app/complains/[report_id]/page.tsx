@@ -104,7 +104,7 @@ function ComplaintDetailPage() {
   }, [complaint]);
 
   const handleActionClick = async (newStatus) => {
-    if (newStatus === "Reject" || newStatus === "Completed") {
+    if (newStatus === "Reject" || newStatus === "Resolved") {
       setModalState({ isOpen: true, action: newStatus });
     } else {
       setStatus(newStatus);
@@ -121,7 +121,7 @@ function ComplaintDetailPage() {
   }
 
   const handleModalSubmit = async (reason) => {
-    const newStatus = modalState.action === "Reject" ? "Rejected" : "Completed";
+    const newStatus = modalState.action === "Reject" ? "Rejected" : "Resolved";
     await updateComplaintStatus(newStatus, reason);
     setStatus(newStatus);
     setModalState({ isOpen: false, action: null });
@@ -187,9 +187,9 @@ function ComplaintDetailPage() {
                 "font-bold " +
                 (status === "Pending"
                   ? "text-yellow-400"
-                  : status === "Working"
+                  : status === "Under Review"
                   ? "text-blue-400"
-                  : status.includes("Completed")
+                  : status.includes("Resolved")
                   ? "text-green-400"
                   : "text-red-400")
               }
@@ -223,16 +223,16 @@ function ComplaintDetailPage() {
             Reject
           </button>
           <button
-            onClick={() => handleActionClick("Working")}
+            onClick={() => handleActionClick("Under Review")}
             className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-8 rounded-lg"
           >
-            Mark as Working
+            Mark as Under Review
           </button>
           <button
-            onClick={() => handleActionClick("Completed")}
+            onClick={() => handleActionClick("Resolved")}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg"
           >
-            Mark as Completed
+            Mark as Resolved
           </button>
         </div>
       </div>
