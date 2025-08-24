@@ -5,14 +5,14 @@ import { useRouter, useParams } from "next/navigation";
 import { supabase } from "../../../lib/supabaseClient";
 import { registeredBillboards } from "../data";
 
-function calculateMatchProbability(lat1, lon1, lat2, lon2) {
+function calculateMatchProbability(latitude, longitude, gps_latitude, gps_longitude) {
   const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const dLat = ((gps_latitude - latitude) * Math.PI) / 180;
+  const dLon = ((gps_longitude - longitude) * Math.PI) / 180;
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
+    Math.cos((latitude * Math.PI) / 180) *
+      Math.cos((gps_latitude * Math.PI) / 180) *
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));

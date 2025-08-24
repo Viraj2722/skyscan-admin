@@ -49,8 +49,8 @@ const InputField = ({
 export default function BillboardRegPage() {
   const [form, setForm] = useState({
     billboard_id: "",
-    gps_latitude: "",
-    gps_longitude: "",
+    latitude: "",
+    longitude: "",
     size: "",
     address: "",
     owner: "",
@@ -111,8 +111,8 @@ export default function BillboardRegPage() {
   const validateForm = () => {
     const requiredFields = [
       "billboard_id",
-      "gps_latitude",
-      "gps_longitude",
+      "latitude",
+      "longitude",
       "size",
       "address",
       "owner",
@@ -133,8 +133,8 @@ export default function BillboardRegPage() {
     }
 
     // Validate coordinates
-    const lat = parseFloat(form.gps_latitude);
-    const lng = parseFloat(form.gps_longitude);
+    const lat = parseFloat(form.latitude);
+    const lng = parseFloat(form.longitude);
     if (
       isNaN(lat) ||
       isNaN(lng) ||
@@ -199,8 +199,8 @@ export default function BillboardRegPage() {
         validity_from: form.validity_from,
         validity_till: form.validity_to,
         size: form.size.trim(),
-        gps_latitude: parseFloat(form.gps_latitude),
-        gps_longitude: parseFloat(form.gps_longitude),
+        latitude: parseFloat(form.latitude),
+        longitude: parseFloat(form.longitude),
       };
 
       // Register billboard
@@ -217,8 +217,8 @@ export default function BillboardRegPage() {
       // Reset form
       setForm({
         billboard_id: "",
-        gps_latitude: "",
-        gps_longitude: "",
+        latitude: "",
+        longitude: "",
         size: "",
         address: "",
         owner: "",
@@ -339,18 +339,18 @@ export default function BillboardRegPage() {
                 label="Latitude"
                 type="number"
                 placeholder="e.g., 19.0760"
-                value={form.gps_latitude}
+                value={form.latitude}
                 onChange={handleChange}
-                name="gps_latitude"
+                name="latitude"
                 required
               />
               <InputField
                 label="Longitude"
                 type="number"
                 placeholder="e.g., 72.8777"
-                value={form.gps_longitude}
+                value={form.longitude}
                 onChange={handleChange}
-                name="gps_longitude"
+                name="longitude"
                 required
               />
             </div>
