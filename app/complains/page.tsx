@@ -35,8 +35,18 @@ const ComplaintsList = ({
   onBack,
   complaints,
 }: ComplaintsListProps) => {
-  const filteredComplaints = complaints.filter(
-    (c) => c.report_type === category
+  const pendingStatuses = ["pending", "under review"];
+  const pendingComplaints = complaints.filter(
+    (c) =>
+      c.report_type === category &&
+      c.status &&
+      pendingStatuses.includes(c.status.trim().toLowerCase())
+  );
+  const resolvedComplaints = complaints.filter(
+    (c) =>
+      c.report_type === category &&
+      c.status &&
+      !pendingStatuses.includes(c.status.trim().toLowerCase())
   );
 
   return (
@@ -50,9 +60,10 @@ const ComplaintsList = ({
         </button>
         <h2 className="text-3xl font-bold text-white">{category} Complaints</h2>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredComplaints.length > 0 ? (
-          filteredComplaints.map((complaint) => (
+      <h3 className="text-xl font-bold text-yellow-400 mb-4">Pending</h3>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {pendingComplaints.length > 0 ? (
+          pendingComplaints.map((complaint) => (
             <Link
               href={`/complains/${complaint.report_id}`}
               key={complaint.report_id}
@@ -63,13 +74,7 @@ const ComplaintsList = ({
                     <span className="text-sm font-semibold text-gray-400">
                       {complaint.report_id}
                     </span>
-                    <span
-                      className={`text-sm font-bold ${
-                        complaint.status === "Pending"
-                          ? "text-yellow-400"
-                          : "text-green-400"
-                      }`}
-                    >
+                    <span className="text-sm font-bold text-yellow-400">
                       {complaint.status}
                     </span>
                   </div>
@@ -87,7 +92,43 @@ const ComplaintsList = ({
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">
-            No complaints in this category.
+            No pending complaints in this category.
+          </p>
+        )}
+      </div>
+      <h3 className="text-xl font-bold text-green-400 mb-4">Resolved</h3>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {resolvedComplaints.length > 0 ? (
+          resolvedComplaints.map((complaint) => (
+            <Link
+              href={`/complains/${complaint.report_id}`}
+              key={complaint.report_id}
+            >
+              <div className="bg-gray-800 p-6 rounded-lg shadow-lg cursor-pointer hover:bg-gray-700 transition-transform transform hover:-translate-y-1 h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-sm font-semibold text-gray-400">
+                      {complaint.report_id}
+                    </span>
+                    <span className="text-sm font-bold text-green-400">
+                      {complaint.status}
+                    </span>
+                  </div>
+                  <p className="text-gray-300 mb-4 text-sm line-clamp-3">
+                    {complaint.issue}
+                  </p>
+                </div>
+                <div className="text-xs text-gray-500 border-t border-gray-700 pt-2 mt-2">
+                  {complaint.timestamp
+                    ? new Date(complaint.timestamp).toLocaleDateString()
+                    : ""}
+                </div>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <p className="text-gray-500 col-span-full text-center">
+            No resolved complaints in this category.
           </p>
         )}
       </div>
@@ -140,24 +181,27 @@ export default function ComplainsPage() {
     );
   }
 
-  // Count complaints by report_type and status 'Pending'
+  const openStatuses = ["pending", "under review"];
   const hazardousCount = complaints.filter(
     (c) =>
       c.report_type === "Hazardous" &&
       c.status &&
-      c.status.toLowerCase() === "under review"
+      openStatuses.includes(c.status.trim().toLowerCase())
   ).length;
   const illegalCount = complaints.filter(
     (c) =>
       c.report_type === "Illegal" &&
       c.status &&
-      c.status.toLowerCase() === "under review"
+      openStatuses.includes(c.status.trim().toLowerCase())
   ).length;
   const inappropriateCount = complaints.filter(
     (c) =>
       c.report_type === "Inappropriate" &&
       c.status &&
-      c.status.toLowerCase() === "under review"
+      openStatuses.includes(c.status.trim().toLowerCase())
+  ).length;
+  const totalComplaints = complaints.filter(
+    (c) => c.report_type === "Inappropriate"
   ).length;
 
   return (
@@ -170,7 +214,7 @@ export default function ComplainsPage() {
       ) : (
         <div className="grid lg:grid-cols-3 gap-8">
           <CategoryCard
-            title="Hazardous (Danger)"
+            title="Hazardous"
             description="Complaints related to structural integrity, electrical issues, or immediate public danger."
             count={hazardousCount}
             onClick={() => setSelectedCategory("Hazardous")}

@@ -86,19 +86,13 @@ const LogoIcon = () => (
   </svg>
 );
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
   const navLinks = [
     { href: "/", label: "Dashboard", icon: <DashboardIcon /> },
-    {
-      href: "/billboard-reg",
-      label: "Manage Billboards",
-      icon: <BillboardIcon />,
-    },
+    { href: "/billboard-reg", label: "Manage Billboards", icon: <BillboardIcon /> },
     { href: "/complains", label: "View Complaints", icon: <ComplaintIcon /> },
   ];
 
@@ -119,6 +113,27 @@ export default function RootLayout({
     }
   };
 
+  /* 🚨 If we are on login page, render login layout instead */
+  if (pathname === "/login") {
+    return (
+      <html lang="en">
+        <body className="bg-gray-900 text-gray-200 min-h-screen font-sans flex flex-col">
+          {/* Top Header Bar */}
+          <header className="bg-gray-800 shadow-md h-20 flex items-center px-8">
+            <div className="flex items-center">
+              <LogoIcon />
+              <span className="ml-3 text-2xl font-bold text-white">SkyScan</span>
+            </div>
+          </header>
+
+          {/* Login page content */}
+          <main className="flex-1 p-8 overflow-y-auto bg-gray-900">{children}</main>
+        </body>
+      </html>
+    );
+  }
+
+  /* ✅ Default Global Layout */
   return (
     <html lang="en">
       <body className="bg-gray-900 text-gray-200 min-h-screen font-sans flex">
@@ -164,9 +179,7 @@ export default function RootLayout({
           <header className="bg-gray-800 shadow-md h-20 flex items-center px-8">
             <h1 className="text-xl font-semibold text-white">Dashboard</h1>
           </header>
-          <main className="flex-1 p-8 overflow-y-auto bg-gray-900">
-            {children}
-          </main>
+          <main className="flex-1 p-8 overflow-y-auto bg-gray-900">{children}</main>
         </div>
       </body>
     </html>
